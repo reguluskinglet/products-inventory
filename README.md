@@ -5,9 +5,7 @@ https://docs.google.com/document/d/1uPjrecuVEdYpcWsae7kLBq2kGA5C35Di5hOo9AW9N84/
 
 ### Схема работы сервисов
 
-<details> 
-<summary></summary>
-custom_mark13
+<img src='https://g.gravizo.com/svg?
 @startuml;
 actor User;
 participant "Client" as A;
@@ -26,13 +24,14 @@ deactivate B;
 A -> User: Login;
 deactivate A;
 User -> A: GetProducts;
-A -> B: Create Request
-deactivate C;
+activate A;
+A -> B: Create Request (Check token);
+activate B;
 B -> A: GetProductsPage;
+deactivate B;
 A -> User: Show Products List;
 @enduml
-custom_mark13
-</details>
+'>
 
 ### Что реализовано из описания задачи:
 - [x] Приложение для клиента (react + redux.).
