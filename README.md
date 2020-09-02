@@ -1,17 +1,39 @@
-#№ Тестовое задание ЦРК Сота
+## Тестовое задание ЦРК Сота
 
 Описание задания:
 https://docs.google.com/document/d/1uPjrecuVEdYpcWsae7kLBq2kGA5C35Di5hOo9AW9N84/edit
 
 ### Схема работы сервисов
 
-```mermaid
-graph TD;
-  Client-->ProductFacadeApi;
-  ProductFacadeApi-->UserManagerService;
-  UserManagerService-->ProductFacadeApi;
-  ProductFacadeApi-->Client;
-```
+<details> 
+<summary></summary>
+custom_mark13
+@startuml;
+actor User;
+participant "Client" as A;
+participant "ProductFacadeApi" as B;
+participant "UserManagementService" as C;
+User -> A: Authorize;
+activate A;
+A -> B: Create Request;
+activate B;
+B -> C: GetToken;
+activate C;
+C -> B: GetUser;
+deactivate C;
+B -> A: Response Created;
+deactivate B;
+A -> User: Login;
+deactivate A;
+User -> A: GetProducts;
+A -> B: Create Request
+deactivate C;
+B -> A: GetProductsPage;
+A -> User: Show Products List;
+@enduml
+custom_mark13
+</details>
+
 ### Что реализовано из описания задачи:
 - [x] Приложение для клиента (react + redux.).
 - [x] Сервис для авторизации пользователей (IdentityServer4).
@@ -27,7 +49,8 @@ graph TD;
 - [x] Адаптивную верстку (можно использовать css-фреймворк).
 - [ ] docker-compose (не запустилась сборка на windows).
 
-### Запуск клиентского приложения
+### Запуск клиентского приложения 
+
 `yarn`
 
 `yarn start`
@@ -37,6 +60,7 @@ graph TD;
 `docker-compose up -d`
 
 ### Для авторизации пользователей
+
 Логин `test@one.com` или `test@two.com`
 
 Пароль `1`
