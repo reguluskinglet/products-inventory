@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <LangVersion>8</LangVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="AutoMapper" Version="10.0.0" />
+      <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.0.1" />
+      <PackageReference Include="CSharpFunctionalExtensions" Version="2.11.5" />
+      <PackageReference Include="FluentMigrator" Version="3.2.9" />
+      <PackageReference Include="FluentMigrator.Runner" Version="3.2.9" />
+      <PackageReference Include="IdentityServer4.AccessTokenValidation" Version="3.0.1" />
+      <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.7" />
+      <PackageReference Include="Microsoft.AspNetCore.Routing.Abstractions" Version="2.2.0" />
+      <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="3.1.7" />
+      <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+      <PackageReference Include="Serilog" Version="2.10.0-dev-01240" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\ProductsFacadeApi.Authorization\ProductsFacadeApi.Authorization.csproj" />
+      <ProjectReference Include="..\ProductsFacadeApi.DAL\ProductsFacadeApi.DAL.csproj" />
+      <ProjectReference Include="..\ProductsFacadeApi.DDD\ProductsFacadeApi.DDD.csproj" />
+      <ProjectReference Include="..\UserManagerService.Client\UserManagerService.Client.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Content Update="appsettings.json">
+            <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+    </ItemGroup>
+
+</Project>

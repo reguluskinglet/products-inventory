@@ -1,0 +1,51 @@
+# Environment Variables located in `.env` file near `docker-compose.yml` file
+
+version: '3.7'
+services:
+  db:
+    image: postgres:11
+    container_name: postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_PASSWORD: 1
+    command:
+        - "postgres"
+        - "-c"
+        - "log_statement=all"
+        - "-c"
+        - "shared_buffers=1024MB"
+        - "-c"
+        - "max_connections=1500"
+    networks:
+      - products-inventory
+    ports:
+      - "5432:5432"
+
+  redis:
+    image: redis:5.0.6-alpine
+    container_name: redis
+    restart: unless-stopped
+    networks:
+      - products-inventory
+    ports:
+      - 6379:6379
+
+  user_manager_service:
+    build: ./Dockerfile
+    container_name: ${UMS_NAME:?UMS name is not set}
+    restart: unless-stopped
+    environment:
+      - ConnectionStrings__DatabaseConnection=Host=postgres;Database=UserManagerService;Username=postgres;Password=1;
+    networks:
+      - products-inventory
+    ports:
+      - "${UMS_PORT_HTTP:?UMS http port is not set}:80"
+      - "${UMS_PORT_HTTPS:?UMS https port is not set}:443"
+    depends_on:
+      - db
+      - redis
+
+networks:
+  emercore:
+    driver: bridge
+    name: products-inventory

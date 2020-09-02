@@ -1,0 +1,52 @@
+# Environment Variables located in `.env` file near `docker-compose.yml` file
+
+version: '3.7'
+services:
+  db:
+    image: postgres:11
+    container_name: postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_PASSWORD: 1
+    command:
+        - "postgres"
+        - "-c"
+        - "log_statement=all"
+        - "-c"
+        - "shared_buffers=1024MB"
+        - "-c"
+        - "max_connections=1500"
+    networks:
+      - products-inventory
+    ports:
+      - "5432:5432"
+
+  redis:
+    image: redis:5.0.6-alpine
+    container_name: redis
+    restart: unless-stopped
+    networks:
+      - products-inventory
+    ports:
+      - 6379:6379
+
+  products_facade_api:
+    build: ./Dockerfile
+    container_name: ${PFA_NAME:?PFA name is not set}
+    restart: unless-stopped
+    environment:
+      - ConnectionStrings__DatabaseConnection=Host=postgres;Database=ProductsFacadeApi;Username=postgres;Password=1;
+      - RedisOptions__Configuration=redis
+    networks:
+      - products-inventory
+    ports:
+      - "${PFA_PORT_HTTP:?PFA http port is not set}:80"
+      - "${PFA_PORT_HTTPS:?PFA https port is not set}:443"
+    depends_on:
+      - db
+      - redis
+
+networks:
+  emercore:
+    driver: bridge
+    name: products-inventory
