@@ -63,3 +63,7 @@ A -> User: Show Products List;
 Логин `test@one.com` или `test@two.com`
 
 Пароль `1`
+
+### Тесты для back-end
+
+Перед запуском тестов должен быть запущен postgresql из docker-compose. В проекте с тестами расположен appsettings.json с настройками подключения к БД.
