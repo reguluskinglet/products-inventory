@@ -11,7 +11,7 @@ namespace ProductsFacadeApi.DAL.Mappings
         public ProductMap()
         {
             Table("products");
-            Id(x => x.Id);
+            Id(x => x.Id).GeneratedBy.Assigned();
             Map(x => x.Title, "title").Nullable();
             Map(x => x.Description, "description").Nullable();
             Map(x => x.Price, "price").Nullable();

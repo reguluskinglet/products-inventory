@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using ProductsFacadeApi.DDD;
 using ProductsFacadeApi.Domain.Entities;
 
 namespace ProductsFacadeApi.DAL.Abstractions
@@ -7,7 +8,7 @@ namespace ProductsFacadeApi.DAL.Abstractions
     /// <summary>
     /// Интерфейс репозитория товаров.
     /// </summary>
-    public interface IProductsRepository
+    public interface IProductsRepository : IRepository<Product>
     {
         /// <summary>
         /// Получение постраничного списка товаров.

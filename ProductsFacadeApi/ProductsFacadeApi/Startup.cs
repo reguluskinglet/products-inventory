@@ -19,6 +19,7 @@ using ProductsFacadeApi.DDD;
 using ProductsFacadeApi.Infrastructure.Options;
 using ProductsFacadeApi.Middlewares;
 using UserManagerService.Client;
+using UserManagerService.Client.Options;
 
 namespace ProductsFacadeApi
 {

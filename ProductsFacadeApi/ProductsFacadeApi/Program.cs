@@ -39,7 +39,7 @@ namespace ProductsFacadeApi
         /// Метод для запуска раннера миграций.
         /// </summary>
         /// <param name="services"></param>
-        private static void InitializeDataBase(IServiceProvider services)
+        public static void InitializeDataBase(IServiceProvider services)
         {
             // var logger = services.GetRequiredService<ILogger>();
 

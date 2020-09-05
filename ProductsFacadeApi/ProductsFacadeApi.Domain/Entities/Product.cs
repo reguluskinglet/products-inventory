@@ -17,7 +17,7 @@ namespace ProductsFacadeApi.Domain.Entities
         /// <summary>
         /// Конуструктор сущности товара.
         /// </summary>
-        internal Product() : base(Guid.NewGuid())
+        public Product() : base(Guid.NewGuid())
         {
         }
     }

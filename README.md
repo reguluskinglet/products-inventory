@@ -1,4 +1,4 @@
-## Тестовое задание ЦРК Сота
+## Тестовое задание ЦРК СОТА
 
 Описание задания:
 https://docs.google.com/document/d/1uPjrecuVEdYpcWsae7kLBq2kGA5C35Di5hOo9AW9N84/edit

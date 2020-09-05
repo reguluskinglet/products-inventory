@@ -16,7 +16,7 @@ namespace UserManagerService.Client
     /// <summary>
     /// Клиент для обращения к UserManagerService.
     /// </summary>
-    public sealed class UserManagerServiceClient
+    public class UserManagerServiceClient
     {
         private readonly HttpClient _httpClient;
         private readonly ILogger _logger;

@@ -21,7 +21,7 @@ namespace ProductsFacadeApi.Authorization.Contexts
         public static Guid? CurrentUserId
         {
             get => currentUserIdStorage.Value;
-            internal set => currentUserIdStorage.Value = value;
+            set => currentUserIdStorage.Value = value;
         }
     }
 }

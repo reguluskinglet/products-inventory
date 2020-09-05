@@ -9,12 +9,12 @@ namespace ProductsFacadeApi.DDD
     /// </summary>
     public interface IRepository<TEntity> where TEntity : BaseEntity
     {
-        Task Add(TEntity entity);
+        Task AddAsync(TEntity entity);
 
-        Task<TEntity> GetById(Guid id);
+        Task<TEntity> GetByIdAsync(Guid id);
 
-        Task Delete(Guid id);
+        Task DeleteAsync(Guid id);
 
-        Task<IList<TEntity>> GetAll();
+        Task<IList<TEntity>> GetAllAsync();
     }
 }

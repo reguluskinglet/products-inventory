@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using NHibernate;
 using Microsoft.Extensions.Logging;
@@ -62,7 +63,7 @@ namespace ProductsFacadeApi.DDD
         /// <summary>
         /// Успешное завершение работы.
         /// </summary>
-        public void Commit()
+        public async Task CommitAsync()
         {
             if (!_isAlive)
             {
@@ -73,7 +74,7 @@ namespace ProductsFacadeApi.DDD
 
             try
             {
-                _transaction.Commit();
+                await _transaction.CommitAsync();
             }
             finally
             {

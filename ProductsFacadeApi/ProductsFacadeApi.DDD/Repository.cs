@@ -18,9 +18,9 @@ namespace ProductsFacadeApi.DDD
         /// Добавление сущности.
         /// </summary>
         /// <param name="entity">Сущность.</param>
-        public async Task Add(T entity)
+        public async Task AddAsync(T entity)
         {
-            await _unitOfWork.SaveOrUpdateAsync(entity);
+            await _unitOfWork.SaveOrUpdateAsync<T>(entity);
         }
 
         /// <summary>
@@ -28,7 +28,7 @@ namespace ProductsFacadeApi.DDD
         /// </summary>
         /// <param name="id">Идентификатор сущности.</param>
         /// <returns>Сущность.</returns>
-        public async Task<T> GetById(Guid id)
+        public async Task<T> GetByIdAsync(Guid id)
         {
             return await _unitOfWork.GetAsync<T, Guid>(id);
         }
@@ -45,9 +45,9 @@ namespace ProductsFacadeApi.DDD
         /// <summary>
         /// Удалить сущность
         /// </summary>
-        public async Task Delete(Guid id)
+        public async Task DeleteAsync(Guid id)
         {
-            var entity = await GetById(id);
+            var entity = await GetByIdAsync(id);
             if (entity != null)
             {
                 await DeleteAsync(entity);
@@ -57,7 +57,7 @@ namespace ProductsFacadeApi.DDD
         /// <summary>
         /// Получить все сущности
         /// </summary>
-        public async Task<IList<T>> GetAll()
+        public async Task<IList<T>> GetAllAsync()
         {
             return await Task.FromResult(_unitOfWork.Query<T>().ToList());
         }
