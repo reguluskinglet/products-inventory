@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using ProductsFacadeApi.ApplicationServices;
 using ProductsFacadeApi.Authorization.Contexts;
 using ProductsFacadeApi.Infrastructure.Dto;
+using StackExchange.Redis.Extensions.Core.Abstractions;
 
 namespace ProductsFacadeApi.Controllers
 {
@@ -20,12 +21,12 @@ namespace ProductsFacadeApi.Controllers
     public class ProductsController : Controller
     {
         private readonly ILogger _logger;
-        private readonly IDistributedCache _cache;
+        private readonly IRedisCacheClient _cache;
         private readonly ProductsService _productsService;
         
         public ProductsController(
             ProductsService productsService,
-            IDistributedCache cache
+            IRedisCacheClient cache
         )
         {
             //_logger = logger;
@@ -46,15 +47,47 @@ namespace ProductsFacadeApi.Controllers
                 return BadRequest(productsListResult.Value);
             }
 
-            await _cache.SetStringAsync(AuthorizationContext.CurrentUserId.ToString(), JsonConvert.SerializeObject(
-                new ProductCacheDto()
-                {
-                    Products = productsListResult.Value.Products,
-                    TotalCount = productsListResult.Value.TotalCount,
-                    PageIndex = pageDto.PageIndex,
-                }));
+            var redisResult = await _cache.GetDbFromConfiguration().AddAsync("user:key", 
+                productsListResult.Value.Products);
+            if (!redisResult)
+            {
+                return BadRequest("Could not add products to Redis cache.");
+            }
 
             return Ok(productsListResult.Value);
+        }
+
+        /// <summary>
+        /// Добавить новый товар.
+        /// </summary>
+        /// <param name="productDto"></param>
+        /// <returns></returns>
+        [HttpPost("add")]
+        public async Task<ActionResult> AddProduct([FromBody] AddProductDto productDto)
+        {
+            if (productDto.Title == null)
+            {
+                return BadRequest("Ниименование товара пустое.");
+            }
+            
+            if (productDto.Price == 0)
+            {
+                return BadRequest("Не указана цена товара.");
+            }
+            
+            var addProductResult = await _productsService.AddProductAsync(productDto);
+            if (addProductResult.IsFailure)
+            {
+                return BadRequest("Не удалось создать новый товар.");
+            }
+
+            var redisResult = await _cache.GetDbFromConfiguration().RemoveAsync("user:key");
+            if (!redisResult)
+            {
+                return BadRequest("Could not delete products from Redis cache.");
+            }
+            
+            return Ok();
         }
     }
 }

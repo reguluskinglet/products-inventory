@@ -18,6 +18,8 @@ using ProductsFacadeApi.DAL.Abstractions;
 using ProductsFacadeApi.DDD;
 using ProductsFacadeApi.Infrastructure.Options;
 using ProductsFacadeApi.Middlewares;
+using StackExchange.Redis.Extensions.Core.Configuration;
+using StackExchange.Redis.Extensions.Newtonsoft;
 using UserManagerService.Client;
 using UserManagerService.Client.Options;
 
@@ -52,7 +54,7 @@ namespace ProductsFacadeApi
             services.Configure<RouteOptions>(x => x.LowercaseUrls = true);
 
             var dbConnectionString = Configuration.GetConnectionString("DatabaseConnection");
-            var redisOptions = Configuration.GetSection(nameof(RedisOptions)).Get<RedisOptions>();
+            var redisOptions = Configuration.GetSection("RedisOptions").Get<RedisConfiguration>();
             var userManagerServiceOptions = Configuration.GetSection("ServicesOptions:UserManagerServiceOptions")
                 .Get<UserManagerServiceOptions>();
             services.AddScoped<UserManagerServiceClient>();
@@ -92,7 +94,7 @@ namespace ProductsFacadeApi
                 })
                 .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
-            services.AddStackExchangeRedisCache(options => { options.Configuration = redisOptions.Configuration; });
+            services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(redisOptions);
 
             services.AddHttpClient();
         }
@@ -124,7 +126,7 @@ namespace ProductsFacadeApi
             app.UseAuthorizationMiddleware();
 
             app.UseMiddleware<ProductCacheMiddleware>();
-
+            app.UserRedisInformation();
             app.UseMvc();
         }
     }

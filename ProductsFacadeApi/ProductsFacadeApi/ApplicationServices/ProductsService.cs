@@ -28,7 +28,6 @@ namespace ProductsFacadeApi.ApplicationServices
         public ProductsService(
             IMapper mapper,
             UnitOfWork unitOfWork,
-            
             IProductsRepository productsRepository)
         {
             //_logger = logger;
@@ -54,6 +53,25 @@ namespace ProductsFacadeApi.ApplicationServices
 
                 var mappedProductsPageResult = _mapper.Map<ProductsPage, ProductsPageDto>(productsPage);
                 return Result.Success(mappedProductsPageResult);
+            }
+        }
+
+        /// <summary>
+        /// Создать новый товар.
+        /// </summary>
+        /// <returns></returns>
+        public async Task<Result> AddProductAsync(AddProductDto productDto)
+        {
+            using (_unitOfWork.Begin())
+            {
+                var product = new Product()
+                {
+                    Title = productDto.Title,
+                    Description = productDto.Description,
+                    Price = productDto.Price,
+                };
+                await _productsRepository.AddAsync(product);
+                return Result.Success();
             }
         }
     }

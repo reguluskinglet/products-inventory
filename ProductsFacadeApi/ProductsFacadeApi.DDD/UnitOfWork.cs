@@ -122,7 +122,7 @@ namespace ProductsFacadeApi.DDD
         /// </summary>
         /// <typeparam name="TEntity">Тип сущности.</typeparam>
         /// <param name="entity">Сущность.</param>
-        internal async Task SaveOrUpdateAsync<TEntity>(TEntity entity)
+        public async Task SaveOrUpdateAsync<TEntity>(TEntity entity)
         {
             await _session.SaveOrUpdateAsync(entity);
         }

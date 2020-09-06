@@ -1,11 +1,17 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Distributed;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using ProductsFacadeApi.ApplicationServices;
 using ProductsFacadeApi.Authorization.Contexts;
+using ProductsFacadeApi.DAL.Abstractions;
+using ProductsFacadeApi.DDD;
+using ProductsFacadeApi.Domain.Entities;
 using ProductsFacadeApi.Infrastructure.Dto;
+using StackExchange.Redis.Extensions.Core.Abstractions;
 
 namespace ProductsFacadeApi.Middlewares
 {
@@ -15,15 +21,15 @@ namespace ProductsFacadeApi.Middlewares
     public class ProductCacheMiddleware
     {
         private readonly RequestDelegate _next;
-        private readonly IDistributedCache _cache;
-        
+        private readonly IRedisCacheClient _cache;
+
         /// <summary>
         /// Конструктор.
         /// </summary>
         /// <param name="next"></param>
         /// <param name="cache"></param>
         public ProductCacheMiddleware(RequestDelegate next,
-            IDistributedCache cache)
+            IRedisCacheClient cache)
         {
             _next = next;
             _cache = cache;
@@ -51,28 +57,24 @@ namespace ProductsFacadeApi.Middlewares
         private async Task GetCachedProductsPage(HttpContext httpContext, IQueryCollection query)
         {
             var pageIndex = 0;
-            var pageSize = 0;
+            var pageSize = 10;
 
             var userId = AuthorizationContext.CurrentUserId.ToString();
 
             if (!int.TryParse(query["pageIndex"], out pageIndex) && !int.TryParse(query["pageSize"], out pageSize))
             {
                 await _next.Invoke(httpContext);
+                return;
             }
 
-            var userCache = await _cache.GetStringAsync(userId);
+            var userCache = await _cache.GetDbFromConfiguration().GetAsync<List<Product>>("user:key");
             if (userCache == null)
             {
                 await _next.Invoke(httpContext);
+                return;
             }
 
-            var deserializedCache = JsonConvert.DeserializeObject<ProductCacheDto>(userCache);
-            if (deserializedCache.Products == null)
-            {
-                await _next.Invoke(httpContext);
-            }
-
-            var cachedItems = deserializedCache.Products
+            var cachedItems = userCache
                 .OrderByDescending(x => x.Id)
                 .Skip((pageIndex - 1) * pageSize)
                 .Take(pageSize)
@@ -81,17 +83,17 @@ namespace ProductsFacadeApi.Middlewares
             if (cachedItems.Count == 0)
             {
                 await _next.Invoke(httpContext);
+                return;
             }
 
             var serializedCache = JsonConvert.SerializeObject(new ProductsPageDto()
-                {
-                    Products = cachedItems,
-                    TotalCount = deserializedCache.TotalCount
-            
-                }, new JsonSerializerSettings()
-                {
-                    ContractResolver = new CamelCasePropertyNamesContractResolver()
-                });
+            {
+                Products = cachedItems,
+                TotalCount = 0,
+            }, new JsonSerializerSettings()
+            {
+                ContractResolver = new CamelCasePropertyNamesContractResolver()
+            });
 
             await httpContext.Response.WriteAsync(serializedCache);
         }

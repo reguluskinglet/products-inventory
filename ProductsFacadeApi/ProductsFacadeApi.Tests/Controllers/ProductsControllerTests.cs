@@ -54,10 +54,8 @@ namespace ProductsFacadeApi.Tests.Controllers
             };
             
             // Action
-
-                await _productsRepository.AddAsync(product);
-                await _unitOfWork.CommitAsync();
-
+            await _productsRepository.AddAsync(product);
+            await _unitOfWork.CommitAsync();
 
             SetCurrentUserId(userId);
             var productsPageResult = await _productsController.GetProducts(new PageDto()
@@ -69,7 +67,7 @@ namespace ProductsFacadeApi.Tests.Controllers
             // Assert
             productsPageResult.Result.ShouldBeOfType<OkObjectResult>();
         }
-        
+
         private void SetCurrentUserId(Guid id)
         {
             _httpMessageHandler.Protected().Setup<Task<HttpResponseMessage>>("SendAsync",
