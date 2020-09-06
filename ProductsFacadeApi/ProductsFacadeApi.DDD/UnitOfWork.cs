@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Data;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using NHibernate;
-using Microsoft.Extensions.Logging;
 
 namespace ProductsFacadeApi.DDD
 {
@@ -17,7 +15,6 @@ namespace ProductsFacadeApi.DDD
         private bool _isAlive;
         private ISession _session;
         private ITransaction _transaction;
-        private readonly ILogger _logger;
 
         /// <summary>
         /// Конструктор.

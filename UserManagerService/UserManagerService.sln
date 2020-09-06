@@ -8,15 +8,15 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserManagerService.Domain",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserManagerService.DDD", "UserManagerService.DDD\UserManagerService.DDD.csproj", "{A1C07CF0-C1DE-4F62-8C80-FE94A3E470D0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProductsFacadeApi.Authorization", "ProductsFacadeApi.Authorization\ProductsFacadeApi.Authorization.csproj", "{2DFCB4E8-28C6-45F2-87D9-EAD4D7EF52AB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserManagerService.Client", "UserManagerService.Client\UserManagerService.Client.csproj", "{BF8DDADD-B386-4556-9A56-E8862FC17BFE}"
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WorkingEnvironment", "WorkingEnvironment", "{AE27A9C7-6E09-490E-9A2B-AF7C18F461D4}"
 ProjectSection(SolutionItems) = preProject
 	docker-compose.yaml = docker-compose.yaml
 	Dockerfile = Dockerfile
 EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProductsFacadeApi.Authorization", "ProductsFacadeApi.Authorization\ProductsFacadeApi.Authorization.csproj", "{2DFCB4E8-28C6-45F2-87D9-EAD4D7EF52AB}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserManagerService.Client", "UserManagerService.Client\UserManagerService.Client.csproj", "{BF8DDADD-B386-4556-9A56-E8862FC17BFE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -19,7 +19,6 @@ namespace UserManagerService.Client
     public sealed class UserManagerServiceClient
     {
         private readonly HttpClient _httpClient;
-        private readonly ILogger _logger;
         private readonly string _userManagerUri;
         
         public UserManagerServiceClient(

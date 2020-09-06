@@ -30,38 +30,37 @@ services:
     ports:
       - 6379:6379
 
-  # user_manager_service:
-  #   build:
-  #     context: .
-  #     dockerfile: UserManagerService/Dockerfile
-  #   container_name: ${UMS_NAME:?UMS name is not set}
-  #   restart: unless-stopped
-  #   environment:
-  #     - ConnectionStrings__DatabaseConnection=Host=postgres;Database=UserManagerService;Username=postgres;Password=1;
-  #   networks:
-  #     - products-inventory
-  #   ports:
-  #     - "${UMS_PORT_HTTP:?UMS http port is not set}:80"
-  #     - "${UMS_PORT_HTTPS:?UMS https port is not set}:443"
-  #   depends_on:
-  #     - db
-  #     - redis
+  user_manager_service:
+    build:
+      context: .
+      dockerfile: UserManagerService/Dockerfile
+    container_name: ${UMS_NAME:?UMS name is not set}
+    restart: unless-stopped
+    environment:
+      - ConnectionStrings__DatabaseConnection=Host=postgres;Database=UserManagerService;Username=postgres;Password=1;
+    networks:
+      - products-inventory
+    ports:
+      - "${UMS_PORT_HTTP:?UMS http port is not set}:80"
+      - "${UMS_PORT_HTTPS:?UMS https port is not set}:443"
+    depends_on:
+      - db
+      - redis
 
-  # products_facade_api:
-  #   build: ./ProductsFacadeApi/
-  #   container_name: ${PFA_NAME:?PFA name is not set}
-  #   restart: unless-stopped
-  #   environment:
-  #     - ConnectionStrings__DatabaseConnection=Host=postgres;Database=ProductsFacadeApi;Username=postgres;Password=1;
-  #     - RedisOptions__Configuration=redis
-  #   networks:
-  #     - products-inventory
-  #   ports:
-  #     - "${PFA_PORT_HTTP:?PFA http port is not set}:80"
-  #     - "${PFA_PORT_HTTPS:?PFA https port is not set}:443"
-  #   depends_on:
-  #     - db
-  #     - redis
+  products_facade_api:
+    build: ./ProductsFacadeApi/
+    container_name: ${PFA_NAME:?PFA name is not set}
+    restart: unless-stopped
+    environment:
+      - ConnectionStrings__DatabaseConnection=Host=postgres;Database=ProductsFacadeApi;Username=postgres;Password=1;
+    networks:
+      - products-inventory
+    ports:
+      - "${PFA_PORT_HTTP:?PFA http port is not set}:80"
+      - "${PFA_PORT_HTTPS:?PFA https port is not set}:443"
+    depends_on:
+      - db
+      - redis
 
 networks:
   products-inventory:

@@ -21,9 +21,8 @@ using UserManagerService.Infrastructure.Dto;
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
-        private readonly ILogger _logger;
+        //private readonly ILogger _logger;
         private readonly IMapper _mapper;
-        private readonly UnitOfWork _unitOfWork;
 
         /// <summary>
         /// http клиент который необходимо использовать для запросов
@@ -34,14 +33,12 @@ using UserManagerService.Infrastructure.Dto;
         public UsersService(
             IHttpClientFactory httpFactory,
             IMapper mapper,
-            UnitOfWork unitOfWork,
             UserManager<User> userManager,
             SignInManager<User> signInManager)
         {
             //_logger = logger;
             _mapper = mapper;
             HttpClient = httpFactory.CreateClient();
-            _unitOfWork = unitOfWork;
             _userManager = userManager;
             _signInManager = signInManager;
         }

@@ -4,11 +4,10 @@ WORKDIR /app
 COPY . .
 WORKDIR /app/ProductsFacadeApi
 RUN dotnet restore
-
-COPY . ./
-RUN dotnet publish -c Release -o /app
+RUN dotnet publish -c Release -o out
 
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.1
 WORKDIR /app
-COPY --from=build-env /app .
+COPY --from=build-env /app/ProductsFacadeApi/out ./
+
 ENTRYPOINT ["dotnet", "ProductsFacadeApi.dll"]

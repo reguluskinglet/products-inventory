@@ -7,24 +7,24 @@ import * as ProductStore from '../../store/ProductStore';
 import './styles.scss';
 
 interface IExternalProps extends RouteComponentProps<any> {
-    properties: any;
+  properties: any;
 }
 
 class Product extends React.Component<Props, any> {
-    public render() {
-        return {};
-    }
+  public render() {
+    return {};
+  }
 }
 
 const provider = provide(
-    (state: ApplicationState) => (
-      {
-        ...state.product,
-      }
-    ),
+  (state: ApplicationState) => (
     {
-      ...ProductStore.actionCreators,
-    },
+      ...state.product,
+    }
+  ),
+  {
+    ...ProductStore.actionCreators,
+  },
 ).withExternalProps<IExternalProps>();
   
 type Props = typeof provider.allProps;

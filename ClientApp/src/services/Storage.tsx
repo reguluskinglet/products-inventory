@@ -1,5 +1,4 @@
 import { IUserInfo } from '../common/contracts/IUserInfo';
-import store from '../index';
 
 export default class Storage {
   private static tokenKey = 'user';

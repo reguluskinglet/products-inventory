@@ -1,39 +1,56 @@
+/* eslint-disable react/prefer-stateless-function */
 import React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { provide } from 'redux-typed';
+import { Container, Row } from 'shards-react';
 import { ApplicationState } from '../../store';
 import * as UserStore from '../../store/UserStore';
-import { Container, Row } from "shards-react";
 
 import './styles.scss';
 
 interface IExternalProps extends RouteComponentProps<any> {
-    properties: any;
+  properties: any;
 }
 
 class Login extends React.Component<Props, any> {
-    public render() {
-        return (
-            <Container className="login-container">
-                <Row>
+  public constructor(props) {
+    super(props);
 
-                </Row>
-            </Container>
-        )
-    }
+    this.state = {
+      login: { value: '' },
+      password: { value: '' },
+    };
+  }
+
+  private isValidForm = () => {
+    const { login, password } = this.state;
+    return this.validate(login.value) && this.validate(password.value);
+  };
+
+  private validate = (value: string) => {
+    return value && value.length > 0;
+  }
+
+  public render() {
+    return (
+      <Container className="login-container">
+        <Row />
+      </Container>
+    );
+  }
 }
 
 const provider = provide(
-    (state: ApplicationState) => (
-      {
-        ...state.user,
-      }
-    ),
+  (state: ApplicationState) => (
     {
-      ...UserStore.actionCreators,
-    },
+      ...state.user,
+    }
+  ),
+  {
+    ...UserStore.actionCreators,
+  },
 ).withExternalProps<IExternalProps>();
-  
+
 type Props = typeof provider.allProps;
 
 export default provider.connect(Login);
