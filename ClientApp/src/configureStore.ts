@@ -14,7 +14,7 @@ import { typedToPlain } from 'redux-typed';
 import { ApplicationState, reducers } from './store';
 
 function buildRootReducer(allReducers: ReducersMapObject, history: History) {
-  return combineReducers<ApplicationState>(
+  return combineReducers(
     Object.assign({}, allReducers, { router: connectRouter(history) }),
   );
 }
