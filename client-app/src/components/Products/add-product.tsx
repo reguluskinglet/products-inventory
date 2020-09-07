@@ -24,12 +24,50 @@ import {
 } from 'shards-react';
 
 import './styles.scss';
+import { ImPriceTag } from 'react-icons/im';
 
 interface IExternalProps extends RouteComponentProps<any> {
   properties: any;
 }
 
 class AddProduct extends React.Component<Props, any> {
+  private onChange = (name: string, value: string) => {
+    const isValid = this.validate(value);
+
+    this.setState({
+      [name]: {
+        value,
+      },
+    });
+    return isValid;
+  };
+
+  private onSubmit = (e: React.MouseEvent | React.KeyboardEvent) => {
+    e.preventDefault();
+
+    const { addProduct } = this.props;
+    const { title, description, price } = this.state;
+
+    if (this.isValidForm()) {
+      addProduct(
+        {
+          title: title.value,
+          description: description.value,
+          price: price.value
+        },
+      );
+    }
+  };
+
+  private validate = (value: string) => {
+    return value && value.length > 0;
+  }
+
+  private isValidForm = () => {
+    const { login, password } = this.state;
+    return this.validate(login.value) && this.validate(password.value);
+  };
+
   public render() {
     return (
       <Container className="add-product-container">
@@ -51,11 +89,15 @@ class AddProduct extends React.Component<Props, any> {
                 <CardBody>
                   <FormGroup>
                     <label>Наименование</label>
-                    <FormInput placeholder="" onChange={(e) => this.onChange('login', e.target.value)} />
+                    <FormInput placeholder="" onChange={(e: any) => this.onChange('title', e.target.value)} />
                   </FormGroup>
                   <FormGroup>
                     <label>Описание</label>
-                    <FormTextArea placeholder="" onChange={(e) => this.onChange('password', e.target.value)} />
+                    <FormTextArea placeholder="" onChange={(e: any) => this.onChange('description', e.target.value)} />
+                  </FormGroup>
+                  <FormGroup>
+                    <label>Цена</label>
+                    <FormTextArea placeholder="" onChange={(e: any) => this.onChange('price', e.target.value)} />
                   </FormGroup>
                 </CardBody>
                 <CardFooter>

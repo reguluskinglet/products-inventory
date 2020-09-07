@@ -1,6 +1,6 @@
 import { isActionType, Reducer } from 'redux-typed';
 import { IProduct } from '../../common/Contracts/IProduct';
-import { GetProductsAction } from './action';
+import { GetProductsAction, AppendProductsAction } from './action';
 
 export interface IProductState {
     products: IProduct[];
@@ -13,6 +13,15 @@ export const reducer: Reducer<IProductState> = (state: any, action: any) => {
             return { ...state, products: action.data };
         } else {
             return { ...state, products: action.data, totalCount: action.totalCount };
+        }
+    }
+
+    if (isActionType(action, AppendProductsAction)) {
+        const appendedProducts = state.products.concat(action.data);
+        if(action.totalCount === 0) {
+            return { ...state, products: appendedProducts };
+        } else {
+            return { ...state, products: appendedProducts, totalCount: action.totalCount };
         }
     }
 

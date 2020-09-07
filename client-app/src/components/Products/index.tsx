@@ -60,7 +60,7 @@ class Product extends React.Component<Props, any> {
         && hasNextPage
       ) {
         
-        this.loadProducts(pageIndex + 1, pageSize);
+        this.appendProducts(pageIndex + 1, pageSize);
 
         this.setState({pageIndex: pageIndex + 1});
       }
@@ -100,6 +100,11 @@ class Product extends React.Component<Props, any> {
   private loadProducts = async (pageIndex: number, pageSize: number) => {
     const { getProductsPage } = this.props;
     getProductsPage(pageIndex, pageSize)
+  }
+
+  private appendProducts = async (pageIndex: number, pageSize: number) => {
+    const { appendProductsPage } = this.props;
+    appendProductsPage(pageIndex, pageSize)
   }
 
   public render() {

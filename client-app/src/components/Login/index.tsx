@@ -29,7 +29,6 @@ class Login extends React.Component<Props, any> {
     login: { value: string; };
     password: { value: string; };
   };
-  setState: any;
 
   public constructor(props: any) {
     super(props);
@@ -38,6 +37,7 @@ class Login extends React.Component<Props, any> {
       login: { value: '' },
       password: { value: '' },
     };
+
   }
 
   private isValidForm = () => {
@@ -82,21 +82,21 @@ class Login extends React.Component<Props, any> {
       <Container className="login-container">
         <Row>
           <Col>
-            <Form>
+            <Form style={{ maxWidth: "350px", marginTop: "20%", marginLeft: "auto", marginRight: "auto"}}>
               <Card>
                 <CardHeader>Авторизация</CardHeader>
                 <CardBody>
                   <FormGroup>
                     <label htmlFor="#loginInput">Электронный адрес</label>
-                    <FormInput id="#loginInput" placeholder="" onChange={(e) => this.onChange('login', e.target.value)} />
+                    <FormInput id="#loginInput" placeholder="" onChange={(e: any) => this.onChange('login', e.target.value)} />
                   </FormGroup>
                   <FormGroup>
                     <label htmlFor="#passwordInput">Пароль</label>
-                    <FormInput type="password" id="#passwordInput" placeholder="" onChange={(e) => this.onChange('password', e.target.value)} />
+                    <FormInput type="password" id="#passwordInput" placeholder="" onChange={(e: any) => this.onChange('password', e.target.value)} />
                   </FormGroup>
                 </CardBody>
                 <CardFooter>
-                  <Button disabled={!this.isValidForm} onClick={this.onSubmit}>
+                  <Button block disabled={!this.isValidForm()} onClick={this.onSubmit}>
                     Войти
                   </Button>
                 </CardFooter>
