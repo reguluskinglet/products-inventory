@@ -16,7 +16,7 @@ import {
   Form,
   FormGroup,
   FormInput,
-  FormTextArea,
+  FormTextarea,
   Button,
   Nav,
   NavItem,
@@ -31,6 +31,17 @@ interface IExternalProps extends RouteComponentProps<any> {
 }
 
 class AddProduct extends React.Component<Props, any> {
+
+  constructor(props: any) {
+    super(props);
+
+    this.state = {
+      title: { value: ''},
+      description: { value: ''},
+      price: { value: ''},
+    };
+  }
+
   private onChange = (name: string, value: string) => {
     const isValid = this.validate(value);
 
@@ -64,23 +75,21 @@ class AddProduct extends React.Component<Props, any> {
   }
 
   private isValidForm = () => {
-    const { login, password } = this.state;
-    return this.validate(login.value) && this.validate(password.value);
+    const { title, description, price } = this.state;
+    return this.validate(title.value) && this.validate(description.value) && this.validate(price.value);
   };
 
   public render() {
     return (
       <Container className="add-product-container">
-        <Row>
-          <Nav>
-            <NavItem>
-              <NavLink active href="#/products">Список Товароа</NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink active href="#/add-product">Добавить товар</NavLink>
-            </NavItem>
-          </Nav>
-        </Row>
+        <Nav pills>
+          <NavItem>
+            <NavLink href="#/products">Список Товаров</NavLink>
+          </NavItem>
+          <NavItem>
+            <NavLink active href="#/add-product">Добавить товар</NavLink>
+          </NavItem>
+        </Nav>
         <Row>
           <Col>
             <Form>
@@ -89,19 +98,19 @@ class AddProduct extends React.Component<Props, any> {
                 <CardBody>
                   <FormGroup>
                     <label>Наименование</label>
-                    <FormInput placeholder="" onChange={(e: any) => this.onChange('title', e.target.value)} />
+                    <FormInput onChange={(e: any) => this.onChange('title', e.target.value)} />
                   </FormGroup>
                   <FormGroup>
                     <label>Описание</label>
-                    <FormTextArea placeholder="" onChange={(e: any) => this.onChange('description', e.target.value)} />
+                    <FormTextarea onChange={(e: any) => this.onChange('description', e.target.value)} />
                   </FormGroup>
                   <FormGroup>
                     <label>Цена</label>
-                    <FormTextArea placeholder="" onChange={(e: any) => this.onChange('price', e.target.value)} />
+                    <FormInput type="number" onChange={(e: any) => this.onChange('price', e.target.value)} />
                   </FormGroup>
                 </CardBody>
                 <CardFooter>
-                  <Button disabled={!this.isValidForm} onClick={this.onSubmit}>
+                  <Button disabled={!this.isValidForm()} onClick={this.onSubmit}>
                     Добавить товар
                   </Button>
                 </CardFooter>

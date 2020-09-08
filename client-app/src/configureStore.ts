@@ -5,7 +5,6 @@ import {
     combineReducers,
     compose,
     createStore,
-    Middleware,
     ReducersMapObject,
 } from 'redux';
 import reduxThunk from 'redux-thunk';

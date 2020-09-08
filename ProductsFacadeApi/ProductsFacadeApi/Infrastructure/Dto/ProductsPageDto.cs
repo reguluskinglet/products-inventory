@@ -18,5 +18,10 @@ namespace ProductsFacadeApi.Infrastructure.Dto
         /// Общее количество продуктов.
         /// </summary>
         public int TotalCount { get; set; }
+
+        /// <summary>
+        /// Флаг, что товары выгружены из кеша.
+        /// </summary>
+        public bool IsCached { get; set; }
     }
 }

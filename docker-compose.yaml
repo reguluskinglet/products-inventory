@@ -30,37 +30,52 @@ services:
     ports:
       - 6379:6379
 
-  user_manager_service:
-    build:
-      context: .
-      dockerfile: UserManagerService/Dockerfile
-    container_name: ${UMS_NAME:?UMS name is not set}
-    restart: unless-stopped
-    environment:
-      - ConnectionStrings__DatabaseConnection=Host=postgres;Database=UserManagerService;Username=postgres;Password=1;
-    networks:
-      - products-inventory
-    ports:
-      - "${UMS_PORT_HTTP:?UMS http port is not set}:80"
-      - "${UMS_PORT_HTTPS:?UMS https port is not set}:443"
-    depends_on:
-      - db
-      - redis
+  # user_manager_service:
+  #   build:
+  #     context: .
+  #     dockerfile: UserManagerService/Dockerfile
+  #   container_name: ${UMS_NAME:?UMS name is not set}
+  #   restart: unless-stopped
+  #   environment:
+  #     - ConnectionStrings__DatabaseConnection=Host=postgres;Database=UserManagerService;Username=postgres;Password=1;
+  #   networks:
+  #     - products-inventory
+  #   ports:
+  #     - "${UMS_PORT_HTTP:?UMS http port is not set}:80"
+  #     - "${UMS_PORT_HTTPS:?UMS https port is not set}:443"
+  #   depends_on:
+  #     - db
+  #     - redis
 
-  products_facade_api:
-    build: ./ProductsFacadeApi/
-    container_name: ${PFA_NAME:?PFA name is not set}
-    restart: unless-stopped
-    environment:
-      - ConnectionStrings__DatabaseConnection=Host=postgres;Database=ProductsFacadeApi;Username=postgres;Password=1;
-    networks:
-      - products-inventory
-    ports:
-      - "${PFA_PORT_HTTP:?PFA http port is not set}:80"
-      - "${PFA_PORT_HTTPS:?PFA https port is not set}:443"
-    depends_on:
-      - db
-      - redis
+  # products_facade_api:
+  #   build:
+  #     context: .
+  #     dockerfile: ProductsFacadeApi/Dockerfile
+  #   container_name: ${PFA_NAME:?PFA name is not set}
+  #   restart: unless-stopped
+  #   environment:
+  #     - ConnectionStrings__DatabaseConnection=Host=postgres;Database=ProductsFacadeApi;Username=postgres;Password=1;
+  #   networks:
+  #     - products-inventory
+  #   ports:
+  #     - "${PFA_PORT_HTTP:?PFA http port is not set}:80"
+  #     - "${PFA_PORT_HTTPS:?PFA https port is not set}:443"
+  #   depends_on:
+  #     - db
+  #     - redis
+
+  # client_app:
+  #   build:
+  #     context: .
+  #     dockerfile: client-app/Dockerfile
+  #   container_name: client-app
+  #   env_file:
+  #     - .env
+  #   ports:
+  #     - "4000:80"
+  #   depends_on:
+  #     - user_manager_service
+  #     - products_facade_api
 
 networks:
   products-inventory:

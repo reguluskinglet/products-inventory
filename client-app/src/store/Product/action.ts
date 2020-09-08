@@ -48,9 +48,7 @@ export const actionCreators = {
     },
 
     addProduct: (product: IProduct) => async (dispatch: any, getState: any) => {
-        var result = await ProductService.addProduct(product);
-        if(result && result.products) {
-            dispatch(push("/products"));
-        }
+        await ProductService.addProduct(product);
+        dispatch(push("/products"));
     },
 }

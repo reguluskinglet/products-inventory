@@ -52,6 +52,8 @@ namespace ProductsFacadeApi.ApplicationServices
                 }
 
                 var mappedProductsPageResult = _mapper.Map<ProductsPage, ProductsPageDto>(productsPage);
+
+                mappedProductsPageResult.IsCached = false;
                 return Result.Success(mappedProductsPageResult);
             }
         }
@@ -71,6 +73,7 @@ namespace ProductsFacadeApi.ApplicationServices
                     Price = productDto.Price,
                 };
                 await _productsRepository.AddAsync(product);
+                await _unitOfWork.CommitAsync();
                 return Result.Success();
             }
         }

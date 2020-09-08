@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using Microsoft.AspNetCore.Authorization;
@@ -8,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using ProductsFacadeApi.ApplicationServices;
 using ProductsFacadeApi.Authorization.Contexts;
+using ProductsFacadeApi.Domain.Entities;
 using ProductsFacadeApi.Infrastructure.Dto;
 using StackExchange.Redis.Extensions.Core.Abstractions;
 
@@ -47,11 +49,10 @@ namespace ProductsFacadeApi.Controllers
                 return BadRequest(productsListResult.Value);
             }
 
-            var redisResult = await _cache.GetDbFromConfiguration().AddAsync("user:key", 
-                productsListResult.Value.Products);
-            if (!redisResult)
+            var cacheResult = await SetProductsPageToCache(productsListResult.Value);
+            if (cacheResult.IsFailure)
             {
-                return BadRequest("Could not add products to Redis cache.");
+                return BadRequest(cacheResult.Error);
             }
 
             return Ok(productsListResult.Value);
@@ -69,25 +70,68 @@ namespace ProductsFacadeApi.Controllers
             {
                 return BadRequest("Ниименование товара пустое.");
             }
-            
+
             if (productDto.Price == 0)
             {
                 return BadRequest("Не указана цена товара.");
             }
-            
+
             var addProductResult = await _productsService.AddProductAsync(productDto);
             if (addProductResult.IsFailure)
             {
                 return BadRequest("Не удалось создать новый товар.");
             }
 
-            var redisResult = await _cache.GetDbFromConfiguration().RemoveAsync("user:key");
+            var cacheResult = await RemoveProductsCache();
+            if (cacheResult.IsFailure)
+            {
+                return BadRequest(cacheResult.Error);
+            }
+
+            return Ok();
+        }
+
+        private async Task<Result> SetProductsPageToCache(ProductsPageDto productsPageDto)
+        {
+            var currentUserProductPageCache = await _cache.GetDbFromConfiguration().GetAsync<ProductsPageDto>("user:key");
+
+            var currentUserProducts = productsPageDto.Products;
+            if (currentUserProductPageCache != null)
+            {
+                currentUserProducts = currentUserProducts
+                    .Concat(currentUserProductPageCache.Products)
+                    .ToList();
+            }
+
+            var resultCachedData = new ProductsPageDto()
+            {
+                Products = currentUserProducts,
+                TotalCount = productsPageDto.TotalCount,
+                IsCached = true,
+            };
+
+            var redisResult = await _cache.GetDbFromConfiguration().AddAsync("user:key", resultCachedData);
             if (!redisResult)
             {
-                return BadRequest("Could not delete products from Redis cache.");
+                return Result.Failure("Не удалось обновить список продуктов в Redis cache.");
             }
-            
-            return Ok();
+
+            return Result.Success();
+        }
+
+        private async Task<Result> RemoveProductsCache()
+        {
+            var currentUserCacheExists = await _cache.GetDbFromConfiguration().ExistsAsync("user:key");
+            if (currentUserCacheExists)
+            {
+                var redisResult = await _cache.GetDbFromConfiguration().RemoveAsync("user:key");
+                if (!redisResult)
+                {
+                    return Result.Failure("Could not delete products from Redis cache.");
+                }
+            }
+
+            return Result.Success();
         }
     }
 }

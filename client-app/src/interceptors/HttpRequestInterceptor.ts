@@ -14,7 +14,6 @@ export const useHttpRequestInterceptor = () => {
           AccessControlAllowOrigin: '*',
         },
       };
-
       return newConfig;
     }
     return config;

@@ -47,7 +47,7 @@ class Product extends React.Component<Props, any> {
       hasNextPage: false,
       hasPreviousPage: false,
       pageSize: 9,
-      pageIndex: 0,
+      pageIndex: 1,
       totalCount: 0,
       totalPages: 0,
     };
@@ -58,53 +58,58 @@ class Product extends React.Component<Props, any> {
         window.innerHeight + document.documentElement.scrollTop
         === document.documentElement.offsetHeight
         && hasNextPage
-      ) {
-        
+      ) {        
         this.appendProducts(pageIndex + 1, pageSize);
-
-        this.setState({pageIndex: pageIndex + 1});
       }
-    }, 100);
+    });
   }
 
   public async componentDidMount() {
+    const { pageSize, pageIndex } = this.state;
+    await this.loadProducts(pageIndex, pageSize);
+  }
+
+  private onPageChange = async (pageIndex: number) => {
     const { pageSize } = this.state;
-    this.loadProducts(1, pageSize);
+    await this.loadProducts(pageIndex, pageSize);
+  };
+
+  private loadProducts = async (pageIndex: number, pageSize: number) => {
+    const { getProductsPage } = this.props;
+    
+    await getProductsPage(pageIndex, pageSize);
+
+    const totalPages = Math.ceil(this.props.totalCount / pageSize);
+    this.setState({
+      pageIndex: pageIndex,
+      hasNextPage: pageIndex < totalPages,
+      hasPreviousPage: pageIndex > 1,
+      totalPages: totalPages,
+      totalCount : this.props.totalCount,
+    });
   }
 
   private getPageInfoString = (): string => {
     const { totalCount } = this.props;
     const { pageSize, pageIndex, totalPages } = this.state;
 
-    const from = totalPages ? (pageIndex - 1) * pageSize + 1 : 0;
+    const from = totalPages ? ( pageIndex - 1) * pageSize + 1 : 0;
     const to = pageIndex * pageSize;
-
-    return `${from}-${to > totalCount ? totalCount : to} - ${totalCount}`;
+    return `${from}-${to} - ${totalCount}`;
   };
-
-  private onPageChange = (pageIndex: number) => {
-    const { pageSize } = this.state;
-
-    this.loadProducts(pageIndex, pageSize);
-
-    const totalPages = Math.ceil(this.props.totalCount / pageSize);
-    this.setState({
-      pageIndex: pageIndex + 1,
-      hasNextPage: pageIndex < totalPages,
-      hasPreviousPage: pageIndex > 1,
-      totalCount: this.props.totalCount,
-      totalPages: totalPages,
-    });
-  };
-
-  private loadProducts = async (pageIndex: number, pageSize: number) => {
-    const { getProductsPage } = this.props;
-    getProductsPage(pageIndex, pageSize)
-  }
 
   private appendProducts = async (pageIndex: number, pageSize: number) => {
     const { appendProductsPage } = this.props;
-    appendProductsPage(pageIndex, pageSize)
+    await appendProductsPage(pageIndex, pageSize);
+
+    const totalPages = Math.ceil(this.props.totalCount / pageSize);
+    this.setState({
+      pageIndex: pageIndex,
+      hasNextPage: pageIndex < totalPages,
+      hasPreviousPage: pageIndex > 1,
+      totalPages: totalPages,
+      totalCount : this.props.totalCount,
+    });
   }
 
   public render() {
@@ -112,16 +117,14 @@ class Product extends React.Component<Props, any> {
     const { pageSize, pageIndex, hasNextPage, hasPreviousPage, totalPages } = this.state;
     return (
       <Container className="products-container">
-        <Row>
-          <Nav>
-            <NavItem>
-              <NavLink active href="#/products">Список Товароа</NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink href="#/add-product">Добавить товар</NavLink>
-            </NavItem>
-          </Nav>
-        </Row>
+        <Nav pills>
+          <NavItem>
+            <NavLink active href="#/products">Список Товароа</NavLink>
+          </NavItem>
+          <NavItem>
+            <NavLink href="#/add-product">Добавить товар</NavLink>
+          </NavItem>
+        </Nav>
         <Row>
           <Col>
             <div className="buttons-wrapper">
@@ -129,33 +132,33 @@ class Product extends React.Component<Props, any> {
               disabled={!pageIndex || pageIndex === 1}
               onClick={() => this.onPageChange(1)}
             >
-              <ImUndo width="16" height="16" fill="#3D4551" />
+              <ImUndo/>
             </Button>
             <Button
               disabled={!hasPreviousPage}
               onClick={() => this.onPageChange(pageIndex - 1)}
             >
-              <ImArrowLeft2 width="16" height="16" fill="#3D4551" />
+              <ImArrowLeft2/>
             </Button>
             <span className="navigation-info">{this.getPageInfoString()}</span>
             <Button
               disabled={!hasNextPage}
               onClick={() => this.onPageChange(pageIndex + 1)}
             >
-              <ImArrowRight2 width="16" height="16" fill="#3D4551" />
+              <ImArrowRight2/>
             </Button>
             <Button
-              disabled={!totalPages || pageIndex === totalCount}
+              disabled={pageIndex * pageSize >= totalCount}
               onClick={() => this.onPageChange(totalPages)}
             >
-              <ImRedo width="16" height="16" fill="#3D4551" />
+              <ImRedo/>
             </Button>
           </div>
           </Col>
         </Row>
         <Row>
-        {products.map((product: IProduct) => (
-          <Col>
+        {products.map((product: IProduct, index: number) => (
+          <Col key={index} sm="12" lg="4">
               <Card>
               <CardImg style={{width: "100%"}} src="https://cdn.shopify.com/s/files/1/0095/7510/4576/products/Signet-Ring-9_2048x2048.jpg?v=1569415408" />
               <CardBody>

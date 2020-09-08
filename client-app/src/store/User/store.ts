@@ -9,11 +9,9 @@ export interface IUserState {
 
 export const reducer: Reducer<IUserState> = (state, action: any) => {
     if (isActionType(action, LoginUserAction)) {
-        return {
-            ...state,
-            usersLoading: action.user,
+        return { ...state, user: action.user,
         };
     }
 
-    return state || { user: null, errorMessage: null}
+    return state || { user: null, errorMessage: null }
 }

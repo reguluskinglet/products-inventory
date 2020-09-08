@@ -67,15 +67,14 @@ namespace ProductsFacadeApi.Middlewares
                 return;
             }
 
-            var userCache = await _cache.GetDbFromConfiguration().GetAsync<List<Product>>("user:key");
-            if (userCache == null)
+            var userProductsPageCache = await _cache.GetDbFromConfiguration().GetAsync<ProductsPageDto>("user:key");
+            if (userProductsPageCache == null)
             {
                 await _next.Invoke(httpContext);
                 return;
             }
 
-            var cachedItems = userCache
-                .OrderByDescending(x => x.Id)
+            var cachedItems = userProductsPageCache.Products
                 .Skip((pageIndex - 1) * pageSize)
                 .Take(pageSize)
                 .ToList();
@@ -86,11 +85,14 @@ namespace ProductsFacadeApi.Middlewares
                 return;
             }
 
-            var serializedCache = JsonConvert.SerializeObject(new ProductsPageDto()
+            var resultCachedData = new ProductsPageDto()
             {
                 Products = cachedItems,
-                TotalCount = 0,
-            }, new JsonSerializerSettings()
+                TotalCount = userProductsPageCache.TotalCount,
+                IsCached = userProductsPageCache.IsCached,
+            };
+
+            var serializedCache = JsonConvert.SerializeObject(resultCachedData, new JsonSerializerSettings()
             {
                 ContractResolver = new CamelCasePropertyNamesContractResolver()
             });
